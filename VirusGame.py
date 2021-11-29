@@ -11,6 +11,8 @@ class Game:
         if move[0] < 0 or move[1] < 0 or move[0] >= self.width or move[1] >= self.height:
             return False
         if player == 1:
+            if move in self.p1 or move in self.p1c:
+                return False
             if not(move in self.p2):
                 if [move[0]-1, move[1]] in self.p1 or [move[0]+1, move[1]] in self.p1 or [move[0], move[1]-1] in self.p1 or [move[0], move[1]+1] in self.p1:
                     return True
@@ -20,6 +22,8 @@ class Game:
                 # TODO: Fuck this shit, I'm out
                 return False
         else:
+            if move in self.p2 or move in self.p2c:
+                return False
             if not(move in self.p1):
                 if [move[0]-1, move[1]] in self.p2 or [move[0]+1, move[1]] in self.p2 or [move[0], move[1]-1] in self.p2 or [move[0], move[1]+1] in self.p2:
                     return True
@@ -43,6 +47,13 @@ class Game:
                 self.p2c.append(move.copy())
             else:
                 self.p2.append(move.copy())
+        return True
+
+    def checkGameEnd(self, player):
+        for i in range(self.width):
+            for j in range(self.height):
+                if self.validateMove(player, [i, j].copy()):
+                    return False
         return True
 
     def getString(self):

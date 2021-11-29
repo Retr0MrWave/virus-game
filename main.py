@@ -14,3 +14,5 @@ while True:
         if g.makeMove(2, move.copy()):
             turn = 1
     print(g.getString())
+    if (g.checkGameEnd(turn)):
+        break
