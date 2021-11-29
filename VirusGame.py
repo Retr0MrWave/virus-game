@@ -8,8 +8,27 @@ class Game:
         self.p2c = []
     
     def validateMove(self, player, move):
-        # TODO: this is the most important function, as it defines the game rules
-        return True
+        if move[0] < 0 or move[1] < 0 or move[0] >= self.width or move[1] >= self.height:
+            return False
+        if player == 1:
+            if not(move in self.p2):
+                if [move[0]-1, move[1]] in self.p1 or [move[0]+1, move[1]] in self.p1 or [move[0], move[1]-1] in self.p1 or [move[0], move[1]+1] in self.p1:
+                    return True
+                else:
+                    return False
+            else:
+                # TODO: Fuck this shit, I'm out
+                return False
+        else:
+            if not(move in self.p1):
+                if [move[0]-1, move[1]] in self.p2 or [move[0]+1, move[1]] in self.p2 or [move[0], move[1]-1] in self.p2 or [move[0], move[1]+1] in self.p2:
+                    return True
+                else:
+                    return False
+            else:
+                # TODO: Fuck this shit, I'm out
+                return False
+        return False
     
     def makeMove(self, player, move):
         if not(self.validateMove(player, move.copy())):
@@ -24,7 +43,7 @@ class Game:
                 self.p2c.append(move.copy())
             else:
                 self.p2.append(move.copy())
-        print(self.p1)
+        return True
 
     def getString(self):
         sarr = []
