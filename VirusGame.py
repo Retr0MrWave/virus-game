@@ -72,11 +72,13 @@ class Game:
         if player == 1:
             if move in self.p2:
                 self.p1c.append(move.copy())
+                self.p2.remove(move.copy())
             else:
                 self.p1.append(move.copy())
         elif player == 2:
             if move in self.p1:
                 self.p2c.append(move.copy())
+                self.p1.remove(move.copy())
             else:
                 self.p2.append(move.copy())
         return True
@@ -85,6 +87,7 @@ class Game:
         for i in range(self.width):
             for j in range(self.height):
                 if self.validateMove(player, [i, j].copy()):
+                    print(i, j)
                     return False
         return True
 
