@@ -7,30 +7,62 @@ class Game:
         self.p1c = []
         self.p2c = []
     
+    def goodp1c(self):
+        r = []
+        look_through = self.p1.copy()
+        for cell in look_through:
+            if [cell[0] - 1, cell[1]] in self.p1c and not([cell[0] - 1, cell[1]] in r):
+                r.append([cell[0] - 1, cell[1]].copy())
+                look_through.append([cell[0] - 1, cell[1]].copy())
+            if [cell[0] + 1, cell[1]] in self.p1c and not([cell[0] + 1, cell[1]] in r):
+                r.append([cell[0] + 1, cell[1]].copy())
+                look_through.append([cell[0] + 1, cell[1]].copy())
+            if [cell[0], cell[1] - 1] in self.p1c and not([cell[0], cell[1] - 1] in r):
+                r.append([cell[0], cell[1] - 1].copy())
+                look_through.append([cell[0], cell[1] - 1].copy())
+            if [cell[0], cell[1] + 1] in self.p1c and not([cell[0], cell[1] + 1] in r):
+                r.append([cell[0], cell[1] + 1].copy())
+                look_through.append([cell[0], cell[1] + 1].copy())
+        return r.copy()
+        
+    def goodp2c(self):
+        r = []
+        look_through = self.p2.copy()
+        for cell in look_through:
+            if [cell[0] - 1, cell[1]] in self.p2c and not([cell[0] - 1, cell[1]] in r):
+                r.append([cell[0] - 1, cell[1]].copy())
+                look_through.append([cell[0] - 1, cell[1]].copy())
+            if [cell[0] + 1, cell[1]] in self.p2c and not([cell[0] + 1, cell[1]] in r):
+                r.append([cell[0] + 1, cell[1]].copy())
+                look_through.append([cell[0] + 1, cell[1]].copy())
+            if [cell[0], cell[1] - 1] in self.p2c and not([cell[0], cell[1] - 1] in r):
+                r.append([cell[0], cell[1] - 1].copy())
+                look_through.append([cell[0], cell[1] - 1].copy())
+            if [cell[0], cell[1] + 1] in self.p2c and not([cell[0], cell[1] + 1] in r):
+                r.append([cell[0], cell[1] + 1].copy())
+                look_through.append([cell[0], cell[1] + 1].copy())
+        return r.copy()
+
     def validateMove(self, player, move):
         if move[0] < 0 or move[1] < 0 or move[0] >= self.width or move[1] >= self.height:
             return False
         if player == 1:
-            if move in self.p1 or move in self.p1c:
+            p1gc = self.goodp1c()
+            if move in self.p1 or move in self.p1c or move in self.p2c:
                 return False
-            if not(move in self.p2):
-                if [move[0]-1, move[1]] in self.p1 or [move[0]+1, move[1]] in self.p1 or [move[0], move[1]-1] in self.p1 or [move[0], move[1]+1] in self.p1:
-                    return True
-                else:
-                    return False
+            gc1 = self.p1.copy() + p1gc.copy()
+            if [move[0]-1, move[1]] in gc1 or [move[0]+1, move[1]] in gc1 or [move[0], move[1]-1] in gc1 or [move[0], move[1]+1] in gc1:
+                return True
             else:
-                # TODO: Fuck this shit, I'm out
                 return False
         else:
-            if move in self.p2 or move in self.p2c:
+            p2gc = self.goodp2c()
+            if move in self.p2 or move in self.p2c or move in self.p1c:
                 return False
-            if not(move in self.p1):
-                if [move[0]-1, move[1]] in self.p2 or [move[0]+1, move[1]] in self.p2 or [move[0], move[1]-1] in self.p2 or [move[0], move[1]+1] in self.p2:
-                    return True
-                else:
-                    return False
+            gc2 = self.p2.copy() + p2gc.copy()
+            if [move[0]-1, move[1]] in gc2 or [move[0]+1, move[1]] in gc2 or [move[0], move[1]-1] in gc2 or [move[0], move[1]+1] in gc2:
+                return True
             else:
-                # TODO: Fuck this shit, I'm out
                 return False
         return False
     
