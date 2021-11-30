@@ -1,18 +1,66 @@
 import VirusGame as vg
 
-g = vg.Game(10, 10)
+print("Welcome to Virus:The Game")
+print("Please enter width and height of your desired field")
+w, h = map(int, input().split())
+g = vg.Game(w, h)
 print(g.getString())
 
 turn = 1
 move = [-1, -1]
 while True:
-    move[0], move[1] = map(int, input().split())
     if turn == 1:
-        if g.makeMove(1, move.copy()):
-            turn = 2
+        print("First player, your turn")
+        move[0], move[1] = map(int, input().split())
+        while not(g.makeMove(1, move.copy())):
+            print("Invalid move. Please try again")
+            move[0], move[1] = map(int, input().split())
+        print(g.getString())
+        if (g.checkGameEnd(1)):
+            print("Player 2 won")
+            break
+        move[0], move[1] = map(int, input().split())
+        while not(g.makeMove(1, move.copy())):
+            print("Invalid move. Please try again")
+            move[0], move[1] = map(int, input().split())
+        print(g.getString())
+        if (g.checkGameEnd(1)):
+            print("Player 2 won")
+            break
+        move[0], move[1] = map(int, input().split())
+        while not(g.makeMove(1, move.copy())):
+            print("Invalid move. Please try again")
+            move[0], move[1] = map(int, input().split())
+        print(g.getString())
+        if (g.checkGameEnd(2)):
+            print("Player 1 won")
+            break
+        turn = 2
     else:
-        if g.makeMove(2, move.copy()):
-            turn = 1
-    print(g.getString())
-    if (g.checkGameEnd(turn)):
-        break
+        print("Second player, your turn")
+        move[0], move[1] = map(int, input().split())
+        while not(g.makeMove(2, move.copy())):
+            print("Invalid move. Please try again")
+            move[0], move[1] = map(int, input().split())
+        print(g.getString())
+        if (g.checkGameEnd(2)):
+            print("Player 1 won")
+            break
+        move[0], move[1] = map(int, input().split())
+        while not(g.makeMove(2, move.copy())):
+            print("Invalid move. Please try again")
+            move[0], move[1] = map(int, input().split())
+        print(g.getString())
+        if (g.checkGameEnd(2)):
+            print("Player 1 won")
+            break
+        move[0], move[1] = map(int, input().split())
+        while not(g.makeMove(2, move.copy())):
+            print("Invalid move. Please try again")
+            move[0], move[1] = map(int, input().split())
+        print(g.getString())
+        if (g.checkGameEnd(1)):
+            print("Player 2 won")
+            break
+        turn = 1
+input("Thanks for playing. Press Enter to exit")
