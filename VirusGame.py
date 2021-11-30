@@ -87,7 +87,6 @@ class Game:
         for i in range(self.width):
             for j in range(self.height):
                 if self.validateMove(player, [i, j].copy()):
-                    print(i, j)
                     return False
         return True
 
