@@ -25,26 +25,98 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+import VirusGame as vg
+games_dict = {"":""}
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
-    update.message.reply_markdown_v2(
-        fr'Hi {user.mention_markdown_v2()}\!',
-        reply_markup=ForceReply(selective=True),
-    )
+    if len(context.args) != 2:
+        update.message.reply_text("You messed up the parameters. I need two integers, seperated by a space. It's not that hard")
+        return
+    try:
+        w = int(context.args[0])
+        h = int(context.args[1])
+    except (ValueError):
+        update.message.reply_text("You messed up the parameters. I need two integers, seperated by a space. It's not that hard")
+        return
+    games_dict.pop(update.message.chat_id, None)
+    games_dict[update.message.chat_id] = [vg.Game(w, h), 1, 3]
+    update.message.reply_text("```\n" + games_dict[update.message.chat_id][0].getString() + "\n```", parse_mode="MarkdownV2")
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    update.message.reply_text('Of course I didn\'t bother putting this in')
 
 
-def echo(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+def move1(update: Update, context: CallbackContext) -> None:
+    id = update.message.chat_id
+    try:
+        games_dict[id]
+    except KeyError:
+        update.message.reply_text("I\'m afraid you didn't start a game yet")
+        return
+    if games_dict[id][1] == 2:
+        update.message.reply_text("It\'s not your turn")
+        return
+    try:
+        move = [int(context.args[0]), int(context.args[1])]
+    except (ValueError, IndexError):
+        update.message.reply_text("You messed up the parameters. I need two integers, seperated by a space. It's not that hard")
+        return
+    if not(games_dict[id][0].makeMove(1, move.copy())):
+        update.message.reply_text("Invalid move")
+        return
+    update.message.reply_text("```\n" + games_dict[update.message.chat_id][0].getString() + "\n```", parse_mode="MarkdownV2")
+    games_dict[id][2] -= 1
+    if games_dict[id][2] == 0:
+        if games_dict[id][0].checkGameEnd(2):
+            update.message.reply_text("Player 1 won")
+            games_dict.pop(update.message.chat_id, None)
+            return
+        games_dict[id][2] = 3
+        games_dict[id][1] = 2
+    else:
+        if games_dict[id][0].checkGameEnd(1):
+            update.message.reply_text("Player 2 won")
+            games_dict.pop(update.message.chat_id, None)
+            return
+            
+def move2(update: Update, context: CallbackContext) -> None:
+    id = update.message.chat_id
+    try:
+        games_dict[id]
+    except KeyError:
+        update.message.reply_text("I\'m afraid you didn't start a game yet")
+        return
+    if games_dict[id][1] == 1:
+        update.message.reply_text("It\'s not your turn")
+        return
+    try:
+        move = [int(context.args[0]), int(context.args[1])]
+    except (ValueError, IndexError):
+        update.message.reply_text("You messed up the parameters. I need two integers, seperated by a space. It's not that hard")
+        return
+    if not(games_dict[id][0].makeMove(2, move.copy())):
+        update.message.reply_text("Invalid move")
+        return
+    update.message.reply_text("```\n" + games_dict[update.message.chat_id][0].getString() + "\n```", parse_mode="MarkdownV2")
+    games_dict[id][2] -= 1
+    if games_dict[id][2] == 0:
+        if games_dict[id][0].checkGameEnd(1):
+            update.message.reply_text("Player 2 won")
+            games_dict.pop(update.message.chat_id, None)
+            return
+        games_dict[id][2] = 3
+        games_dict[id][1] = 1
+    else:
+        if games_dict[id][0].checkGameEnd(2):
+            update.message.reply_text("Player 1 won")
+            games_dict.pop(update.message.chat_id, None)
+            return
 
 
 def main() -> None:
@@ -58,11 +130,10 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("start", start, pass_args=True))
     dispatcher.add_handler(CommandHandler("help", help_command))
-
-    # on non command i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(CommandHandler("move1", move1, pass_args=True))
+    dispatcher.add_handler(CommandHandler("move2", move2, pass_args=True))
 
     # Start the Bot
     updater.start_polling()
