@@ -123,7 +123,7 @@ def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     tokenfile = open("token.txt", 'r')
-    token = tokenfile.readline()
+    token = tokenfile.readline().strip()
     updater = Updater(token)
 
     # Get the dispatcher to register handlers

@@ -103,10 +103,7 @@ grid = Grid(w, h)
 while True:
     clock.tick(FPS)
     if grid.game.checkGameEnd(grid.c+1):
-        if grid.cc == 3:
-            p = (grid.c + 1) % 2 + 1
-        else:
-            p = grid.c + 1
+        p = (grid.c + 1) % 2 + 1
         # create a text surface object,
         # on which text is drawn on it.
         text = font.render("Player " + str(p) + " won. Congratulations!", True, GREEN, BLUE)
