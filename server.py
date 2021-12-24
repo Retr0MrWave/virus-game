@@ -32,7 +32,7 @@ async def create_session(request):
     if data['session_id'] in gamesDict:
         return web.Response(status=403, reason="this session already exists")
     
-    gamesDict[data['session_id']] = [vg.Game(data['size'], data['size']), data['p1s'], None, 1, 0].copy()
+    gamesDict[data['session_id']] = [vg.Game(size, size), data['p1s'], None, 1, 0].copy()
     
     return web.Response(status=200)
 
@@ -93,7 +93,7 @@ async def move(request):
         return web.Response(status=200)
 
 @routes.post('/{session_id}/del')
-async def join_session(request):
+async def del_session(request):
     data = await request.post()
     # Main parameters
     for param in ('player', 'secret'):
@@ -108,7 +108,7 @@ async def join_session(request):
     if not request.match_info['session_id'] in gamesDict:
         return web.Response(status=404, reason="this session does not exist")
     
-    if data['secret'] != gamesDict[id][p]:
+    if data['secret'] != gamesDict[request.match_info['session_id']][p]:
         return web.Response(status=403, reason="wrong secret")
     
     gamesDict[request.match_info['session_id']][p] = None
@@ -125,6 +125,7 @@ async def get_game(request):
         game = gamesDict[session_id][0]
         if game.checkGameEnd(gamesDict[session_id][3]):
             return web.Response(text=str(gamesDict[session_id][3] % 2 + 1))
+        return web.Response(text=game.getString())
     except KeyError:
         return web.Response(status=404, reason="session not found")
 
