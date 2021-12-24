@@ -55,10 +55,10 @@ async def join_session(request):
 async def move(request):
     data = await request.post()
     # Main parameters
-    for param in ('session_id', 'player', 'secret', 'movex', 'movey'):
+    for param in ('player', 'secret', 'movex', 'movey'):
         if not param in data:
             return web.Response(status=400, reason=(param+" is required"))
-    id = data['session_id']
+    id = request.match_info['session_id']
     
     if not id in gamesDict:
         return web.Response(status=404, reason="this session does not exist")
@@ -96,7 +96,7 @@ async def move(request):
 async def join_session(request):
     data = await request.post()
     # Main parameters
-    for param in ('session_id', 'player', 'secret'):
+    for param in ('player', 'secret'):
         if not param in data:
             return web.Response(status=400, reason=(param+" is required"))
             
@@ -105,16 +105,16 @@ async def join_session(request):
     except ValueError:
         return web.Response(status=400, reason=("player should be an integer"))
     
-    if not data['session_id'] in gamesDict:
+    if not request.match_info['session_id'] in gamesDict:
         return web.Response(status=404, reason="this session does not exist")
     
     if data['secret'] != gamesDict[id][p]:
         return web.Response(status=403, reason="wrong secret")
     
-    gamesDict[data['session_id']][p] = None
+    gamesDict[request.match_info['session_id']][p] = None
 
-    if gamesDict[data['session_id']][1] == None and gamesDict[data['session_id']][2] == None:
-        del gamesDict[data['session_id']]
+    if gamesDict[request.match_info['session_id']][1] == None and gamesDict[request.match_info['session_id']][2] == None:
+        del gamesDict[request.match_info['session_id']]
     
     return web.Response(status=200)
 
