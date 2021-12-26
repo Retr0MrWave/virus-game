@@ -91,7 +91,8 @@ while True:
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
-            exit()
+            pygame.quit()
+            sys.exit()
 
     if main.is_enabled():
         main.update(events)
