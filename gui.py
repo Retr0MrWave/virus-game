@@ -127,11 +127,13 @@ class local:
                 pygame.display.get_surface().blit(text, textRect)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        quit()
+                        pygame.quit()
+                        sys.exit()
             else:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        quit()
+                        pygame.quit()
+                        sys.exit()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         # print("Click!")
                         pos = pygame.mouse.get_pos()

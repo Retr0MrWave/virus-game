@@ -194,12 +194,14 @@ class clnt:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         p = requests.post(server + "/" + id + "/del", data={'player':playern, 'secret':SECRET})
-                        quit()
+                        pygame.quit()
+                        sys.exit()
             else:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         p = requests.post(server + "/" + id + "/del", data={'player':playern, 'secret':SECRET})
-                        quit()
+                        pygame.quit()
+                        sys.exit()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         print("Click!")
                         pos = pygame.mouse.get_pos()
