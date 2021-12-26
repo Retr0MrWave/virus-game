@@ -2,6 +2,7 @@ class local:
     def __init__(self, size):
         w, h = size, size
                 
+        import sys
         import pygame
         # successes, failures = pygame.init()
         # print("{0} successes and {1} failures".format(successes, failures))

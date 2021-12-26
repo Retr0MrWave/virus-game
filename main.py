@@ -1,3 +1,4 @@
+import sys
 import pygame
 import pygame_menu
 successes, failures = pygame.init()
