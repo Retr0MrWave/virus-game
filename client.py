@@ -1,6 +1,6 @@
 class clnt:
     def __init__(self, mode, id, s):
-        server = "http://152.67.77.130:8080"
+        server = "http://yggdrasil.pp.ua:8080"
 
         import requests
         try:
@@ -12,6 +12,7 @@ class clnt:
         import secrets
         SECRET = secrets.token_hex(16)
 
+        observer = False
         # mode = input("Eneter \'c\' to create a session, or \'j\' to join an existing one: ").strip()
         if mode == "c":
             # id = input("Enter your session name: ").strip()
@@ -27,8 +28,12 @@ class clnt:
             if p.status_code != 200:
                 print(str(p.status_code) + ": " + p.reason + "\nPress enetr to continue")
                 exit()
-            s = len(requests.get(server + "/" + id).text.splitlines())
+            s = len(requests.get(server + "/" + id).text.split('\n---')[0].splitlines())
             playern = 2
+        elif mode == "o":
+            s = len(requests.get(server + "/" + id).text.split('\n---')[0].splitlines())
+            playern = 2
+            observer = True
         else:
             exit()
 
@@ -50,10 +55,16 @@ class clnt:
         RED = (255, 0, 0)
         GREEN = (0, 255, 0)
         BLUE = (0, 0, 255)
-        P1T = RED
-        P2T = GREEN
-        P1CT = (255//2, 0, 0)
-        P2CT = (0, 255//2, 0)
+        if playern == 2:
+            P1T = RED
+            P2T = GREEN
+            P1CT = (255//2, 0, 0)
+            P2CT = (0, 255//2, 0)
+        else:
+            P1T = GREEN
+            P2T = RED
+            P1CT = (0, 255//2, 0)
+            P2CT = (255//2, 0, 0)
 
         # create a font object.
         # 1st parameter is the font file
@@ -69,6 +80,7 @@ class clnt:
                 s = self.game.getString()
                 # self.arr = [[0].copy()*w].copy()*h
                 self.arr = []
+                self.ap = None
                 t = []
                 for i in range(w):
                     t.append(0)
@@ -100,7 +112,12 @@ class clnt:
                 if p.status_code != 200:
                     print(str(p.status_code) + ": " + p.reason + "\nPress enetr to continue")
                     exit()
-                gamestr = p.text
+                gamestr = p.text.split('\n---')[0]
+                try:
+                    playerstr = p.text.split('\n---')[1]
+                except IndexError:
+                    return
+                self.ap = int(playerstr)
                 gamearr = gamestr.splitlines()
                 i = 0
                 for row in gamearr:
@@ -140,6 +157,19 @@ class clnt:
                         if self.arr[y][x] == 4:
                             rect = pygame.Rect(x*bsx, y*bsy, bsx, bsy)
                             pygame.draw.rect(screen, P2CT, rect)
+                if not observer:
+                    if self.ap == playern:
+                        text = font.render("Your turn", True, GREEN, BLUE)
+                    else:
+                        text = font.render("Opponent\'s turn, please wait", True, RED, BLUE)
+                else:
+                    if self.ap == playern:
+                        text = font.render("Player 2\'s turn", True, GREEN, BLUE)
+                    else:
+                        text = font.render("Player 1\'s turn", True, RED, BLUE)
+                textRect = text.get_rect()
+                textRect.topleft = (0, 0)
+                pygame.display.get_surface().blit(text, textRect)
             
             def handleClick(self, x, y):
                 w, h = pygame.display.get_surface().get_size()
@@ -175,7 +205,16 @@ class clnt:
                 pl = p.text
                 # create a text surface object,
                 # on which text is drawn on it.
-                text = font.render("Player " + pl + " won. Congratulations!", True, GREEN, BLUE)
+                if observer:
+                    if p == 2:
+                        text = font.render("Player " + str(pl) + " won. Congratulations!", True, GREEN, BLUE)
+                    else:
+                        text = font.render("Player " + str(pl) + " won. Congratulations!", True, RED, BLUE)
+                else:
+                    if int(pl) == playern:
+                        text = font.render("You won. Congratulations!", True, GREEN, BLUE)
+                    else:
+                        text = font.render("You lost. Better luck next time", True, RED, BLUE)
                 
                 # create a rectangular object for the
                 # text surface object
@@ -203,7 +242,7 @@ class clnt:
                         p = requests.post(server + "/" + id + "/del", data={'player':playern, 'secret':SECRET})
                         pygame.quit()
                         sys.exit()
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.type == pygame.MOUSEBUTTONDOWN and not observer:
                         print("Click!")
                         pos = pygame.mouse.get_pos()
                         # print(" ", pos)

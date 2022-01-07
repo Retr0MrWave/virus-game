@@ -125,7 +125,7 @@ async def get_game(request):
         game = gamesDict[session_id][0]
         if game.checkGameEnd(gamesDict[session_id][3]):
             return web.Response(text=str(gamesDict[session_id][3] % 2 + 1))
-        return web.Response(text=game.getString())
+        return web.Response(text=game.getString() + '\n---' + '\n' + str(gamesDict[session_id][3]))
     except KeyError:
         return web.Response(status=404, reason="session not found")
 

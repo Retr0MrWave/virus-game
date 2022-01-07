@@ -109,7 +109,10 @@ class local:
                 p = (grid.c + 1) % 2 + 1
                 # create a text surface object,
                 # on which text is drawn on it.
-                text = font.render("Player " + str(p) + " won. Congratulations!", True, GREEN, BLUE)
+                if p == 2:
+                    text = font.render("Player " + str(p) + " won. Congratulations!", True, GREEN, BLUE)
+                else:
+                    text = font.render("Player " + str(p) + " won. Congratulations!", True, RED, BLUE)
                 
                 # create a rectangular object for the
                 # text surface object

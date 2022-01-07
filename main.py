@@ -37,6 +37,7 @@ lc = pygame_menu.Menu("Local", 720, 720, theme=pygame_menu.themes.THEME_BLUE)
 mp = pygame_menu.Menu("Multiplayer", 720, 720, theme=pygame_menu.themes.THEME_BLUE)
 mpc = pygame_menu.Menu("Create", 720, 720, theme=pygame_menu.themes.THEME_BLUE)
 mpj = pygame_menu.Menu("Join", 720, 720, theme=pygame_menu.themes.THEME_BLUE)
+mpo = pygame_menu.Menu("Spectate", 720, 720, theme=pygame_menu.themes.THEME_BLUE)
 
 # main
 main.add.button('Multiplayer', mp)
@@ -46,6 +47,7 @@ main.add.button('Quit', pygame_menu.events.EXIT)
 # mp
 mp.add.button('Create', mpc)
 mp.add.button('Join', mpj)
+mp.add.button('Spectate', mpo)
 mp.add.button('Back', pygame_menu.events.BACK)
 
 #mpc
@@ -72,6 +74,17 @@ def j_run_client():
 
 mpj.add.button('Start', j_run_client)
 mpj.add.button('Back', pygame_menu.events.BACK)
+
+#mpo
+o_session_widget = mpo.add.text_input('Session name: ')
+
+def o_run_client():
+    from client import clnt
+    id = o_session_widget.get_value()
+    clnt('o', id, -1)
+
+mpo.add.button('Start', o_run_client)
+mpo.add.button('Back', pygame_menu.events.BACK)
 
 # lc
 size_widget = lc.add.text_input('Size: ', default='10', input_type=pygame_menu.locals.INPUT_INT)
